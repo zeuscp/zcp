@@ -2,6 +2,7 @@
 
 import subprocess
 import sys
+import re
 
 
 class System():
@@ -40,15 +41,18 @@ class System():
         Returns True if scan finds string
         """
         self.array = []
-        regex = re.compile('\\b'+string+'\\b')
-        with open(file, 'r') as lines:
-            for line in lines:
-                match = regex.findall(line)
-                if len(match) > 0:
-                    if array:
-                        self.array.append(line)
-                    return True
-        return False
+        try:
+            regex = re.compile('\\b'+string+'\\b')
+            with open(file, 'r') as lines:
+                for line in lines:
+                    match = regex.findall(line)
+                    if len(match) > 0:
+                        if array:
+                            self.array.append(line)
+                        return True
+        except IOError:
+            raise IOError
+            return False
 
     def readFile(self, file):
         """
@@ -57,15 +61,21 @@ class System():
         try:
             with open(file, 'r') as lines:
                 return lines.read()
-        except Exception, e:
-            print e
+        except IOError:
+            raise IOError
+            return False
             
 
-    def writeFile(self):
+    def writeFile(self, file, contents):
         """
         Writes a file
         """
-        pass
+        try:
+            f = open(file, 'w')
+            f.write(contents)
+            f.close()
+        except Exception, e:
+            raise Exception
 
     def appendFile(self):
         """
@@ -93,8 +103,11 @@ class System():
 
 if __name__ == '__main__':
     system = System()
-    print system.runShellCommand('l -al hello')
-    print system.runShellCommand('foo bar')
-    print system.runShellCommand('ls -al hello')
-    print system.runShellCommand('cas -al hello')
+    #print system.runShellCommand('l -al hello')
+    #print system.runShellCommand('foo bar')
+    #print system.runShellCommand('ls -al hello')
+    #print system.runShellCommand('cas -al hello')
     #print system.readFile('/home/zeus/current/test.txt')
+    print system.writeFile('app/modules/builtins/testas/writefile.txt',
+                           'I should raise an exception!\n')
+
