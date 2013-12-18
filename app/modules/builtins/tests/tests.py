@@ -19,3 +19,28 @@ class TestSystem(unittest.TestCase):
         sh = system.System()
         self.assertRaises(OSError, sh.runShellCommand, 'ls -al /var/log/fooo')
 
+    def test_scanFile_for_IOError_file_not_exists(self):
+        sh = system.System()
+        self.assertRaises(IOError, sh.scanFile, 'test.txt', 'hello')
+
+    def test_scanFile_for_IOError_return_true(self):
+        sh = system.System()
+        self.assertTrue(sh.scanFile('app/modules/builtins/tests/scanfile.txt',
+                                    'Theres a snake in my boots'))
+
+    def test_scanFile_for_IOError_return_false(self):
+        sh = system.System()
+        self.assertFalse(sh.scanFile('app/modules/builtins/tests/scanfile.txt',
+                                     'Luke, I am your father'))
+
+    def test_scanFile_for_IOError_return_true_with_array(self):
+        sh = system.System()
+        self.assertTrue(sh.scanFile('app/modules/builtins/tests/scanfile.txt',
+                                    'I\'m a broken record',
+                                    array=1))
+
+    def test_scanFile_for_IOError_return_false_with_array(self):
+        sh = system.System()
+        self.assertFalse(sh.scanFile('app/modules/builtins/tests/scanfile.txt',
+                                     'nooooooooooooooooooo',
+                                     array=1))
