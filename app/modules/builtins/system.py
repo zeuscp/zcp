@@ -1,5 +1,6 @@
 #-*- coding: utf-8 -*-
 
+from netifaces import interfaces, ifaddresses, AF_INET
 import subprocess
 import fileinput
 import platform
@@ -141,6 +142,15 @@ class System():
                 raise OSError
         return True
 
+    def getIps(self):
+        """
+        Return List of IP addresses
+        """
+        ip_list = []
+        for interface in interfaces():
+            for link in ifaddresses(interface)[AF_INET]:
+                ip_list.append(link['addr'])
+        return ip_list
 
 if __name__ == '__main__':
     system = System()
