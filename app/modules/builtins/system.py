@@ -42,6 +42,14 @@ class System():
         except OSError:
             raise OSError
 
+    def validateDirectory(self, path):
+        """
+        Return True if Directory exists
+        """
+        if os.path.isdir(path):
+            return True
+        return False
+
     def getKernelRelease(self):
         """
         Get Kernel Release Version
@@ -77,6 +85,12 @@ class System():
         except IOError:
             raise IOError
             return False
+
+    def checkMount(self, path='/'):
+        """
+        Return True if is a mount
+        """
+        return os.path.ismount(path)
 
     def readFile(self, file):
         """

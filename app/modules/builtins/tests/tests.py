@@ -119,13 +119,6 @@ class TestSystem(unittest.TestCase):
                           "I should be true!"
                          )
 
-    def test_createDirectory_OSError_for_exception(self):
-        sh = system.System()
-        self.assertRaises(OSError,
-                          sh.createDirectory,
-                          '/var/www/footest',
-                         )
-
     def test_createDirectory_success(self):
         sh = system.System()
         self.assertTrue(True,
