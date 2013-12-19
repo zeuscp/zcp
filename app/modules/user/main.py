@@ -95,7 +95,6 @@ class User():
         groupadd sftponly
         """
         string = self.system.runShellCommand(command)
-        print string
         return string
 
     def createDirectory(self):
