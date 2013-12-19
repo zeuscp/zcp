@@ -2,6 +2,8 @@
 
 import subprocess
 import fileinput
+import platform
+import socket
 import errno
 import sys
 import re
@@ -38,6 +40,24 @@ class System():
             return output
         except OSError:
             raise OSError
+
+    def getKernelRelease(self):
+        """
+        Get Kernel Release Version
+        """
+        return platform.release()
+
+    def getOs(self):
+        """
+        Get Operating System Release
+        """
+        return self.runShellCommand("cat /etc/system-release")
+
+    def getHostname(self):
+        """
+        Get Hostname
+        """
+        return socket.gethostname()
 
     def scanFile(self, file, string, array=None):
         """
@@ -120,6 +140,7 @@ class System():
             if exception.errno != errno.EEXIST:
                 raise OSError
         return True
+
 
 if __name__ == '__main__':
     system = System()

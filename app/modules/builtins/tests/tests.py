@@ -134,23 +134,20 @@ class TestSystem(unittest.TestCase):
                         )
                        )
 
-    def test_getKernel(self):
+    def test_getKernelRelease(self):
         sh = system.System()
-        res = resources.Resources()
         kernel = sh.runShellCommand('uname -r')
         self.assertEqual(kernel.replace('\n', ''),
-                         res.getKernelRelease())
+                         sh.getKernelRelease())
 
     def test_getOS(self):
         sh = system.System()
-        res = resources.Resources()
         os = sh.runShellCommand('cat /etc/system-release')
         self.assertEqual(os,
-                         res.getOs())
+                         sh.getOs())
 
     def test_getHostName(self):
         sh = system.System()
-        res = resources.Resources()
         hostname = sh.runShellCommand('hostname')
         self.assertEqual(hostname.replace('\n', ''),
-                         res.getHostname())
+                         sh.getHostname())
