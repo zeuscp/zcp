@@ -3,35 +3,18 @@
 import system
 import platform
 import socket
+import psutil
 
 
 class Resources():
     def __init__(self):
         self.system = system.System()
 
-    def getKernelRelease(self):
-        """
-        Get Kernel Release Version
-        """
-        return platform.release()
-
-    def getOs(self):
-        """
-        Get Operating System Release
-        """
-        return self.system.runShellCommand("cat /etc/system-release")
-
-    def getHostname(self):
-        """
-        Get Hostname
-        """
-        return socket.gethostname()
-
     def getRamUsage(self):
         """
-        Get Physical Ram Usage
+        Get Virtual Memory Usage
         """
-        return psutil.phymem_usage()
+        return psutil.virtual_memory()
 
     def getDiskUsage(self,path='/'):
         """
@@ -41,4 +24,4 @@ class Resources():
 
 if __name__ == '__main__':
     res = Resources()
-    print res.getKernelRelease()
+    print res.getRamUsage()
