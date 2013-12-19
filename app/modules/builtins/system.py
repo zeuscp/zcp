@@ -3,8 +3,10 @@
 from netifaces import interfaces, ifaddresses, AF_INET
 import subprocess
 import fileinput
+import datetime
 import platform
 import socket
+import shutil
 import errno
 import sys
 import re
@@ -165,6 +167,18 @@ class System():
             for link in ifaddresses(interface)[AF_INET]:
                 ip_list.append(link['addr'])
         return ip_list
+
+    def makeBackup(self, file=None):
+        """
+        Creates a backup of the file
+        """
+        timestamp = datetime.datetime.today().strftime('%m.%d.%Y.%H.%M.%S')
+        try:
+            shutil.copyfile(file, "{0}.{1}".format(file, timestamp))
+            return True
+        except:
+            raise
+
 
 if __name__ == '__main__':
     system = System()

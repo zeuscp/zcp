@@ -44,7 +44,7 @@ class TestSystem(unittest.TestCase):
 
     def test_checkUmask_returns_false(self):
         u = user.User()
-        umask = u.checkUmask(umask="0022")
+        umask = u.checkUmask(umask="2222")
         self.assertFalse(umask)
 
     def test_checkFstab_returns_true(self):
@@ -71,3 +71,29 @@ class TestSystem(unittest.TestCase):
         u = user.User()
         grp = u.createGroup()
         self.assertEquals("", grp)
+
+    def test_createUser_matches_string(self):
+        us = user.User()
+        us.web_service = 'apache'
+        us.shell = '/bin/false'
+        us.passwd = 'foobar'
+        us.username = 'rawrgar'
+        create = us.createUser()
+        self.assertEquals("", create)
+        
+    def test_createUser_matches_fail(self):
+        us = user.User()
+        us.web_service = 'apache'
+        us.shell = '/bin/false'
+        us.passwd = 'foobar'
+        us.username = ""
+        self.assertRaises(OSError,
+                          us.createUser)
+        
+    def test_createDirectory_return_true_for_exists(self):
+        us = user.User()
+        self.assertTrue(us.createDirectory('/home/zeus'))
+        
+    def test_appendUmask_return_true(self):
+        us = user.User()
+        self.assertTrue(us.appendUmask(umask='0222'))

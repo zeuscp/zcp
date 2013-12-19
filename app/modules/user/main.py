@@ -5,6 +5,10 @@ from app.modules.builtins.system import System
 class User():
     def __init__(self):
         self.system = System()
+        self.web_service = ""
+        self.shell = ""
+        self.passwd = ""
+        self.username = ""
 
     def checkDirectory(self, path):
         """
@@ -87,27 +91,46 @@ class User():
         useradd -d /home/<username> -s </bin/nologin> -p <passwd>
         -g <apache> -G sftponly <username>
         """
-        pass
+        string = "useradd -g {0} -G sftponly -s {1} -p {2} \
+-d /home/{3} {3}".format(self.web_service,
+                         self.shell,
+                         self.passwd,
+                         self.username,
+                        )
+        try:
+            return self.system.runShellCommand(string)
+        except OSError:
+            raise OSError
 
-    def createGroup(self, command="groupadd sftponly"):
+    def createGroup(self, group="ftponly"):
         """
         Create new system group with following command:
         groupadd sftponly
         """
-        string = self.system.runShellCommand(command)
-        return string
+        string = "groupadd {0}".format(group)
+        return self.system.runShellCommand(string)
 
-    def createDirectory(self):
+    def createDirectory(self, path):
         """
         Create new directory
         """
-        pass
+        if not self.system.validateDirectory(path):
+            return self.system.createDirectory(path)
+        return True
 
-    def appendUmask(self):
+    def appendUmask(self, umask="0002"):
         """
         Append umask line in pam.d file
         """
-        pass
+        file = '/etc/pam.d/sshd'
+        if not self.checkUmask(umask):
+            if self.system.makeBackup(file):
+                self.system.appendFile(file,
+                                       "session\toptional\tpam_umask.so\tumask="+umask,
+                                      )
+                return True
+            else:
+                print 'failed'
 
     def appendSubSystemGroup(self):
         """
