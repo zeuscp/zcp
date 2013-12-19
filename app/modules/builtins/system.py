@@ -1,8 +1,11 @@
 #-*- coding: utf-8 -*-
 
 import subprocess
+import fileinput
+import errno
 import sys
 import re
+import os
 
 
 class System():
@@ -32,7 +35,7 @@ class System():
             if sh.returncode:
                 if sh.returncode == 2:
                     raise OSError
-            return True
+            return output
         except OSError:
             raise OSError
 
@@ -77,17 +80,29 @@ class System():
         except Exception, e:
             raise Exception
 
-    def appendFile(self):
+    def appendFile(self, file, string):
         """
         Appends line to a file
         """
-        pass
+        try:
+            with open(file, 'a') as line:
+                line.write(string)
+                line.close
+        except Exception:
+            raise Exception
 
-    def findReplaceFile(self):
+    def findReplaceFile(self, file, find, replace):
         """
         Find string and replace
         """
-        pass
+        try:
+            for line in fileinput.FileInput(file, inplace=1):
+                line = line.replace(find, replace)
+                print line,
+        except OSError:
+            raise OSError
+        except Exception, e:
+            raise Exception
 
     def writeToLogFile(self):
         """
@@ -95,11 +110,16 @@ class System():
         """
         pass
 
-    def createDirectory(self):
+    def createDirectory(self, path):
         """
         Create Directory
         """
-        pass
+        try:
+            os.makedirs(path)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise OSError
+        return True
 
 if __name__ == '__main__':
     system = System()
@@ -108,6 +128,17 @@ if __name__ == '__main__':
     #print system.runShellCommand('ls -al hello')
     #print system.runShellCommand('cas -al hello')
     #print system.readFile('/home/zeus/current/test.txt')
-    print system.writeFile('app/modules/builtins/testas/writefile.txt',
-                           'I should raise an exception!\n')
+    #system.writeFile('app/modules/builtins/tests/testappendtofile.txt',
+    #                 'Change: ME\n')
+    #print system.readFile('app/modules/builtins/tests/testappendtofile.txt')
+    #system.findReplaceFile("app/modules/builtins/tests/testappendtofile.txt",
+    #                       "ME",
+    #                       "I am changed",
+    #                      )
+    #print system.readFile('app/modules/builtins/tests/testappendtofile.txt')
+    #system.findReplaceFile("app/modules/builtins/tests/testemptyappendtofile.txt",
+    #                       "ME",
+    #                       "I am changed",
+    #                      )
+    #print system.readFile('app/modules/builtins/tests/testemptyappendtofile.txt')
 
