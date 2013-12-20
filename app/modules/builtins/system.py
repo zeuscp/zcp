@@ -41,7 +41,7 @@ class System():
                 if sh.returncode == 2:
                     raise OSError
             return output
-        except OSError:
+        except OSError, e:
             raise OSError
 
     def validateDirectory(self, path):

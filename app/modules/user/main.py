@@ -57,6 +57,7 @@ class User():
                                    "session\s+optional\s+pam_umask.so\s+umask="+umask,
                                    array=1,
                                   )
+        print uma
         if uma:
             return True
         return False
@@ -98,7 +99,8 @@ class User():
                          self.username,
                         )
         try:
-            return self.system.runShellCommand(string)
+            cmd = self.system.runShellCommand(string)
+            return cmd
         except OSError:
             raise OSError
 
@@ -126,11 +128,12 @@ class User():
         if not self.checkUmask(umask):
             if self.system.makeBackup(file):
                 self.system.appendFile(file,
-                                       "session\toptional\tpam_umask.so\tumask="+umask,
+                                       "session\toptional\tpam_umask.so\tumask="+umask+"\n",
                                       )
                 return True
             else:
-                print 'failed'
+                return False
+        return True
 
     def appendSubSystemGroup(self):
         """
