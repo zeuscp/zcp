@@ -1,7 +1,7 @@
 from flask.ext.wtf import Form
 from wtforms import SelectField, TextAreaField, TextField, PasswordField, BooleanField, validators, ValidationError
 from wtforms.validators import Required
-from app.modules.domain.main import Domain
+#from app.modules.domain.main import Domain
 
 
 class UserForm(Form):

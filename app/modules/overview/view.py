@@ -1,46 +1,48 @@
 from flask import render_template, flash, redirect, session, url_for, Blueprint
-from app.modules.domain.forms.form import AddDomain
-from app.modules.user.forms.form import UserForm
-from app.modules.domain.main import Domain
+from app import app, db, modules
+from app.modules.overview.main import Overview
 
-mod = Blueprint('domains', __name__)
-@mod.route('/domains-list', methods = ['GET', 'POST'])
-def list():
-    return render_template("domain/template/list.html",
-        title = 'domains list',
-        test = 'Hello World',
-        )   
 
-@mod.route('/domains-add', methods = ['GET', 'POST'])
-def add():
-    form = AddDomain()
-    user_form = UserForm()
-    if form.validate_on_submit():
-        try:
-            domain = Domain(domain=form.domain_name.data,
-                            service='httpd',
-                            document_root="/var/www/vhosts")
-            domain.writeVirtualHost(form.vhost.data)
-            domain.writePhpini(form.phpini.data)
-        except Exception, e:
-            return render_template("domain/template/add.html",
-                title = 'domains add',
-                test = 'Hello World',
-                form = form,
-                user_form = user_form,
-                error="Unable to process your request: {0}".format(e)
-                )   
-        return render_template("domain/template/list.html",
-            title = 'domains list',
-            test = 'Hello World',
-            form = form,
-            user_form = user_form,
-            success = "{0} has been added".format(form.domain_name.data)
-            )   
+mod = Blueprint('overview', __name__)
+@mod.route('/', methods = ['GET', 'POST'])
+@mod.route('/index', methods = ['GET', 'POST'])
+def index():
+    o = Overview()
+    system = {'Hostname': o.getHostname(),
+              'IP Address(es)': o.getIps(),
+              'Operating System': o.getOs(),
+              'Kernel Version': o.getKernel(),
+            }
+    graph = {'Disk Usage - Used | Total': {'used': o.getDiskUsed(),
+                                           'free': o.getDiskFree(),
+                                           'total': o.getDiskTotal(),
+                                           'percent': o.getDiskPercent(),
+                                          },
+             'RAM Usage - Used | Total': {'used': o.getRamUsed(),
+                                          'free': o.getRamFree(),
+                                          'total': o.getRamTotal(),
+                                          'percent': o.getRamPercent(),
+                                         },
+            },
+    services = {'Web Service': 'httpd',
+                'Database Service': 'MySQL',
+               }
+    view_more = {'Domains': {'number': 0,
+                             'url': '/domains',
+                            },
+                 'Databases': {'number': 0,
+                               'url': '/databases',
+                              },
+                 'Users': {'number': 0,
+                           'url': '/users',
+                          },
+        }
 
-    return render_template("domain/template/add.html",
-        title = 'domains add',
-        test = 'Hello World',
-        form = form,
-        user_form = user_form,
-        )   
+    return render_template("overview/template/index.html",
+        title = 'Overview',
+        system = system,
+        services = services,
+        graph = graph,
+        view_more = view_more,
+        )
+
