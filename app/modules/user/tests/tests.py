@@ -93,3 +93,7 @@ class TestSystem(unittest.TestCase):
     def test_createDirectory_return_true_for_exists(self):
         us = user.User()
         self.assertTrue(us.createDirectory('/home/zeus'))
+        
+    def test_disableSubsystem_return_true_for_exists(self):
+        us = user.User()
+        self.assertTrue(us.disableSubsystem())

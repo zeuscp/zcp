@@ -125,7 +125,9 @@ class System():
             with open(file, 'a') as line:
                 line.write(string)
                 line.close
-        except Exception:
+        except Exception, e:
+            print Exception
+            print e
             raise Exception
 
     def findReplaceFile(self, file, find, replace):
