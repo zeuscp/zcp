@@ -8,13 +8,8 @@ from app.modules.user import main as user
 class TestSystem(unittest.TestCase):
     def test_checkGroup_returns_true(self):
         u = user.User()
-        grp = u.checkGroup('id -g root')
+        grp = u.checkGroup('root')
         self.assertTrue(grp)
-
-    def test_checkGroup_returns_False(self):
-        u = user.User()
-        self.assertRaises(ValueError,
-                          u.checkGroup)
 
     def test_checkUser_returns_true(self):
         u = user.User()

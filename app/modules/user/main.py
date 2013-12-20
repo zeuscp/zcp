@@ -32,21 +32,22 @@ class User():
         except ValueError, e:
             raise ValueError
 
-    def checkGroup(self, command=None):
+    def checkGroup(self, group=None):
         """
         Return True if group exists
         """
-        if not command:
-            command = "id -g ftpuser"
+        if not group:
+            group = "sftpuser"
         try:
-            grp = self.system.runShellCommand(command)
+            grp = self.system.runShellCommand("id -g {0}".format(group))
+            print grp
             grp = int(grp)
             if isinstance(grp, int):
                 return True
             else:
                 return False
         except ValueError, e:
-            raise ValueError
+            return False
 
     def checkUmask(self, umask="0002"):
         """
@@ -92,6 +93,8 @@ class User():
         useradd -d /home/<username> -s </bin/nologin> -p <passwd>
         -g <apache> -G sftponly <username>
         """
+        if not self.checkGroup(group="sftponly"):
+            self.createGroup(group="sftponly")
         string = "useradd -g {0} -G sftponly -s {1} -p {2} \
 -d /home/{3} {3}".format(self.web_service,
                          self.shell,
@@ -104,7 +107,7 @@ class User():
         except OSError:
             raise OSError
 
-    def createGroup(self, group="ftponly"):
+    def createGroup(self, group="sftponly"):
         """
         Create new system group with following command:
         groupadd sftponly
