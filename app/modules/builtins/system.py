@@ -125,9 +125,8 @@ class System():
             with open(file, 'a') as line:
                 line.write(string)
                 line.close
+            return True
         except Exception, e:
-            print Exception
-            print e
             raise Exception
 
     def findReplaceFile(self, file, find, replace):
@@ -140,7 +139,7 @@ class System():
                 print line,
         except OSError:
             raise OSError
-        except Exception, e:
+        except Exception:
             raise Exception
 
     def writeToLogFile(self):

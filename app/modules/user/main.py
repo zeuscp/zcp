@@ -76,8 +76,8 @@ class User():
         Return True if sftp group subsystem is in sshd_config
         """
         if not match:
-            match = "^Subsystem\s+sftp\s+/usr/libexec/openssh/sftp-server"
-        ss = self.system.scanFile("/etc/ssh/sshd_config",
+            match = "Subsystem\s+sftp\s+/usr/libexec/openssh/sftp-server"
+        ss = self.system.scanFile("/etc/ssh/sshd_config-test",
                                   match,
                                   array=1
                                  )
@@ -136,29 +136,41 @@ class User():
                 return False
         return True
 
-    def disableSubsystem(self, find=None, replace=None):
+    def disableSubsystem(self, find=None):
         """
         Disable Subsystem
         """
+        file = "/etc/ssh/sshd_config-test"
+        self.system.array = []
         if not find:
-            find = "^Subsystem\s+sftp\s+/usr/libexec/openssh/sftp-server",
-        if not replace:
-            replace = "^#Subsystem\s+sftp\s+/usr/libexec/openssh/sftp-server",
-        if self.system.makeBackup('/etc/ssh/sshd_config'):
-            self.system.findReplaceFile("/etc/ssh/sshd_config",
-                                        find,
-                                        replace,
-                                       )
-        return True
+            f = "^Subsystem\s+sftp\s+/usr/libexec/openssh/sftp-server",
+        if self.system.scanFile(file, f[0], array=1):
+            f = self.system.array[0]
+            if self.system.makeBackup(file):
+                self.system.findReplaceFile(file,
+                                            find=f,
+                                            replace="#{0}".format(f),
+                                           )
+            return True
 
-    def appendSubSystem(self, file=None, string=None):
+    def appendSftpSubsystem(self, file=None, string=None):
         """
         Append SubSystem Group to sshd_config
         """
+        search = """
+Subsystem\s+sftp\s+internal-sftp
+
+UsePAM\s+yes
+
+Match\s+Group\s+sftponly
+\s+ChrootDirectory\s+%h
+\s+ForceCommand\s+internal-sftp
+\s+AllowTcpForwarding\s+no
+"""
         if self.checkSubsystem():
-            self.disableSubsytem()
+            self.disableSubsystem()
         if not file:
-            file = '/etc/ssh/sshd_config'
+            file = '/etc/ssh/sshd_config-test'
         if not string:
             string = """
 Subsystem   sftp    internal-sftp
@@ -170,8 +182,11 @@ Match Group sftponly
     ForceCommand internal-sftp
     AllowTcpForwarding no
 """
-        if self.system.makeBackup(file):
-            self.system.appendFile(file, string)
+        if not self.checkSubsystem(search):
+            if self.system.makeBackup(file):
+                if self.system.appendFile(file, string):
+                    return True
+                return False
 
 
     def appendBindMount(self):

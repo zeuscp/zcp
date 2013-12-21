@@ -94,6 +94,6 @@ class TestSystem(unittest.TestCase):
         us = user.User()
         self.assertTrue(us.createDirectory('/home/zeus'))
         
-    def test_disableSubsystem_return_true_for_exists(self):
+    def test_appendSubsystem_return_true(self):
         us = user.User()
-        self.assertTrue(us.disableSubsystem())
+        self.assertTrue(us.appendSftpSubsystem())
