@@ -61,8 +61,22 @@ class User():
             return True
         return False
         
+    def checkFstab(self, string):
+        """
+        Return True if umask is 022 in the pam.d file
+        """
+        a = []
+        fstab = self.system.scanFile('/etc/fstab',
+                                      string,
+                                      array=1,
+                                    )
+        print self.system.array
+        if fstab: 
+            return True
+        return False
+        
 
-    def checkFstab(self, path="/"):
+    def checkMounts(self, path="/"):
         """
         Return True if mount point in fstab exists
         """
@@ -193,6 +207,9 @@ Match Group sftponly
         """
         Append users bindmount point to fstab
         """
+        str = "/var/www/vhosts/ohaiworld.com\s+/home/foobard/ohaiworld.com\s+none\s+bind\s+0\s+0"
+        if not self.checkFstab():
+            pass
         pass
 
     def updateUser(self):

@@ -46,14 +46,14 @@ class TestSystem(unittest.TestCase):
         umask = u.checkUmask(umask="0222")
         self.assertFalse(umask)
 
-    def test_checkFstab_returns_true(self):
+    def test_checkMounts_returns_true(self):
         u = user.User()
-        fstab = u.checkFstab()
+        fstab = u.checkMounts()
         self.assertTrue(fstab)
 
-    def test_checkFstab_returns_false(self):
+    def test_checkMounts_returns_false(self):
         u = user.User()
-        fstab = u.checkFstab(path='/root')
+        fstab = u.checkMounts(path='/root')
         self.assertFalse(fstab)
 
     def test_checkSubsytem_returns_true(self):
@@ -97,3 +97,7 @@ class TestSystem(unittest.TestCase):
     def test_appendSubsystem_return_true(self):
         us = user.User()
         self.assertTrue(us.appendSftpSubsystem())
+
+    def test_checkFstab_returns_true(self):
+        us = user.User()
+        self.assertTrue(us.checkFstab("/var/www/vhosts/ohaiworld.com\s+/home/foobard/ohaiworld.com\s+none\s+bind\s+0\s+0"))

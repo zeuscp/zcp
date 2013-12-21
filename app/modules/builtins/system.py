@@ -79,6 +79,7 @@ class System():
             regex = re.compile('\\b'+string+'\\b')
             with open(file, 'r') as lines:
                 for line in lines:
+                    print line
                     match = regex.findall(line)
                     if len(match) > 0:
                         if array:
