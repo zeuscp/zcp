@@ -6,8 +6,11 @@ import psutil
 
 
 class Resources():
-    def __init__(self):
+    def __init__(self, path='/'):
+        self.path = path
         self.system = system.System()
+        self.ram_usage = self.getRamUsage()
+        self.disk_usage = self.getDiskUsage(path=self.path)
 
     def getRamUsage(self):
         """
@@ -21,7 +24,9 @@ class Resources():
         """
         try:
             if self.system.checkIfDirectory(path):
-                return psutil.disk_usage(path)
+                psu = psutil.disk_usage(path)
+                self.path = path
+                return psu
             else:
                 raise DoesNotExist({"Error": "{0} does not exist".format(path)})
         except:

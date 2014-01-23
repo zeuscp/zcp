@@ -1,0 +1,162 @@
+{% extends 'install/template/base.html' %}
+{% block content %}
+        <div class="row">
+          <div class="col-lg-10">
+            <h1>Installation <small>Install zeusCp()</small></h1>
+            <ol class="breadcrumb">
+              <li class="active"><i class="fa fa-dashboard"></i> Install</li>
+            </ol>
+            <div class="alert alert-success alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              Welcome to zeusCp! This application is still under development so please bear with us!
+            </div>
+          </div>
+        </div><!-- /.row -->
+
+        <div class="row">
+    <div class="col-lg-5">
+        <div class="row">
+        {% for d in systems %}
+              <div class="col-lg-12">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-clock-o"></i>
+                        {{ d|replace("_", " ")|title }}
+                {% if systems[d]|count == 1 %} 
+                    {% for x in systems[d] %}
+                        <small style="color:white">
+                            Path: {{ x }}
+                        </small>
+                    {% endfor %}
+                {% endif %}
+                    </h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="list-group">
+                {% if systems[d]|count == 1 %} 
+                    {% for x in systems[d] %}
+                        {% for k, v in systems[d][x].iteritems() %}
+                          <div class="list-group-item">
+                            <span class="badge"> {{ v }} </span>
+                            <i class=""></i> {{ k|replace("_", " ")|title }}:
+                          </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    {% for x in systems[d] %}
+                        {% if x is mapping %}
+                            {% for k, v in x.iteritems() %}
+                          <div class="list-group-item">
+                            <span class="badge"> {{ v }} </span>
+                            <i class=""></i> {{ k|replace("_", " ")|title }}:
+                          </div>
+                            {% endfor %}
+                        {% else %}
+                          <div class="list-group-item">
+                            <span class="badge"> {{ systems[d][x] }} </span>
+                            <i class=""></i> {{ x|replace("_", " ")|title }}:
+                          </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+        {% endfor %}
+        </div><!-- /.row -->
+
+        <div class="row">
+        {% for d in resources %}
+              <div class="col-lg-6">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">
+                    <h3 class="panel-title"><i class="fa fa-clock-o"></i>
+                        {{ d|replace("_", " ")|title }}
+                {% if resources[d]|count == 1 %} 
+                    {% for x in resources[d] %}
+                        <small style="color:white">
+                            Path: {{ x }}
+                        </small>
+                    {% endfor %}
+                {% endif %}
+                    </h3>
+                  </div>
+                  <div class="panel-body">
+                    <div class="list-group">
+                {% if resources[d]|count == 1 %} 
+                    {% for x in resources[d] %}
+                        {% for k, v in resources[d][x].iteritems() %}
+                          <div class="list-group-item">
+                            <span class="badge"> {{ v }} </span>
+                            <i class=""></i> {{ k|replace("_", " ")|title }}:
+                          </div>
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    {% for x in resources[d] %}
+                        {% if x is mapping %}
+                            {% for k, v in x.iteritems() %}
+                          <div class="list-group-item">
+                            <span class="badge"> {{ v }} </span>
+                            <i class=""></i> {{ k|replace("_", " ")|title }}:
+                          </div>
+                            {% endfor %}
+                        {% else %}
+                          <div class="list-group-item">
+                            <span class="badge"> {{ resources[d][x] }} </span>
+                            <i class=""></i> {{ x|replace("_", " ")|title }}:
+                          </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+        {% endfor %}
+        </div><!-- /.row -->
+    </div>
+    <div class="col-lg-5">
+        <div class="row">
+            <div class="col-lg-12">
+            <div class="alert alert-warning alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              <span style="font-size:1.5em">Instructions:</span>
+              <p>
+                To the left, you have the current system statistics.  Below, you have the options required to build out you server.  Select all of the packages you want installed.
+              </p>
+            </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-clock-o"></i> Basic Lamp Installation</h3>
+              </div>
+              <form url="/api/v1.0/systems" role="form" name="configure_server" method="post">
+              {{ lamp.hidden_tag() }}
+              <div class="panel-body">
+                <div class="list-group">
+                <div class="form-group">
+                {% for d in lamp.l %}
+                    {% if d.name != "csrf_token" %}
+                  <div class="list-group-item">
+                    {{ d.label(class="badge") }}
+                    <i class=""></i>{{ d(class="checkbox") }}
+                  </div>
+                    {% endif %}
+                {% endfor %}
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="submit" value="Configure Server">
+                </div>
+              </div>
+              </form>
+            </div>
+          </div>
+        </div><!-- /.row -->
+    </div>
+    </div>
+{% endblock %}
